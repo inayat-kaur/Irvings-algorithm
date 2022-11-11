@@ -11,7 +11,7 @@ struct person{
 struct list_node{
     struct list_node* next;
     struct list_node* prev;
-    struct person id;
+    struct person* id;
 };
 
 struct list{
