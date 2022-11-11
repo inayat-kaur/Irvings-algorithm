@@ -39,10 +39,10 @@ void stage1(int n,struct list * choice_list){
     for(int i=0;i<n;i++)purpose(n,choice_list,next_to_propose,i);
 }
 
-void stage2(int n, struct choice * choice_list){
+void stage2(int n, struct list * choice_list){
 
 }
 
-void stage3(int n, struct choice * choice_list){
+void stage3(int n, struct list * choice_list){
 
 }
