@@ -1,7 +1,7 @@
 # include <stdio.h>
 # include "doubly_linked_list.h"
 
-void purpose(int n,struct list * choice_list,int * next_to_propose, int i);
+void propose(int n,struct list * choice_list,int * next_to_propose, int i);
 void reject(int n,struct list* choice_list,int to, int by);
 void stage1(int n,struct list * choice_list);
 void stage2(int n, struct choice * choice_list);
@@ -23,7 +23,7 @@ int main(){
     return 0;
 }
 
-void purpose(int n,struct list * choice_list,int * next_to_propose, int i){
+void propose(int n,struct list * choice_list,int * next_to_propose, int i){
 
 }
 
