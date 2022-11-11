@@ -178,19 +178,19 @@ void insert(struct list * choice, int person_number)
 void delete_current(struct list choice, int curr_p_num)
 {
     struct list_node *t = choice.head;
-    while (t.id->person_number != curr_per_num)
+    while(t->person != curr_p_num)
     {
         t = t->next;
     }
     if(t == choice.head) 
     {
-        head = head->next;
-        head->prev = NULL;
+        choice.head = choice.head->next;
+        choice.head->prev = NULL;
     }
     else if(t == choice.tail) 
     {
-        tail = tail->prev;
-        tail->next = NULL;
+        choice.tail = choice.tail->prev;
+        choice.tail->next = NULL;
     }
     else
     {
