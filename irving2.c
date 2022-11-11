@@ -48,6 +48,7 @@ bool stage1(int n,int** choices,int ** rejected,int * set_proposed_to,int *accep
                 while(choices[choices[proposer][next_choice]][j] != proposer) {
                     if(accepted[choices[proposer][next_choice]] == choices[choices[proposer][next_choice]][j]){
                         rejected[proposer][choices[proposer][next_choice]] = true;
+                        rejected[choices[proposer][next_choice]][proposer] = true;
                         break;
                     }
                     j++;
