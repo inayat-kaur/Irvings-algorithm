@@ -127,6 +127,7 @@ struct list* stage2(int n, int **choices, bool **rejected, int *accepted)
                 rejected[i][choices[i][end]] = true;
                 rejected[choices[i][end]][i] = true;
             }
+            end--;
         }
     }
 
@@ -181,7 +182,20 @@ void delete_current(struct list choice, int curr_p_num)
     {
         t = t->next;
     }
-    t->prev = t->next;
-    t->next = t->prev;
-    free(t);
+    if(t == choice.head) 
+    {
+        head = head->next;
+        head->prev = NULL;
+    }
+    else if(t == choice.tail) 
+    {
+        tail = tail->prev;
+        tail->next = NULL;
+    }
+    else
+    {
+        t->prev = t->next;
+        t->next = t->prev;
+        free(t);
+    }
 }
