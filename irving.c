@@ -44,5 +44,23 @@ void stage2(int n, struct list * choice_list){
 }
 
 void stage3(int n, struct list * choice_list){
+    struct list_node *h;
+    struct list_node *t;
 
+    for(int i=0;i<n;i++){
+        
+        h=choice_list[i]->head;
+        t=choice_list[i]->tail;
+
+        if(head==tail && head!=NULL)
+            continue;
+        if(i%2==0){
+            struct list_node k;
+            k=choice[i]->head->next;
+            k->prev->next= k->next;
+            k->next->prev=k->prev;
+            //// 
+            delete k;
+            ////
+        }
 }
