@@ -1,19 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-struct person
-{
-    int person_number;
-    bool proposed;
-    bool accepted;
-    bool rejected;
-};
-
 struct list_node
 {
     struct list_node *next;
     struct list_node *prev;
-    struct person *id;
+    int person;
 };
 
 struct list
@@ -24,12 +16,11 @@ struct list
 };
 
 struct list create_list();
-void insert(struct list choice, int person_number);
-void delete_first();
-void delete_last();
+void insert(struct list* choice, int person_number);
 void delete_current();
 bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *accepted);
 struct list* stage2(int n, int **choices, bool **rejected, int *accepted);
+void stage3();
 
 int main()
 {
@@ -143,59 +134,44 @@ struct list* stage2(int n, int **choices, bool **rejected, int *accepted)
     for(int i=0;i<n;i++){
         result[i] = create_list(i);
         for(int j=0;j<n-1;j++){
-            if(rejected[i][choices[i][j]]==false)insert(result[i],choices[i][j]);
+            if(rejected[i][choices[i][j]]==false)insert(&result[i],choices[i][j]);
         }
     }
     return result;
 }
 
+void stage3(){
+
+}
+
 struct list create_list(int i)
 {
-    struct list* s1;
-    s1 = (struct list *)malloc(sizeof(struct list));
-    s1->list_for = i;
-    s1->head=NULL;
-    s1->tail=NULL;
+    struct list s1;
+    s1.list_for = i;
+    s1.head=NULL;
+    s1.tail=NULL;
     return s1;
 }
 
-void insert(struct list choice, int person_number)
+void insert(struct list * choice, int person_number)
 {
-    struct list_node *p;
-    p = (struct list_node *)malloc(sizeof(struct list_node));
-    p.id.person_number = p_number;
-    p.id.proposed = false;
-    p.id.accepted = false;
-    p.id.rejected = false;
+    struct list_node *l = (struct list_node *)malloc(sizeof(struct list_node));
 
-    p->prev = NULL;
-    p->next = NULL;
+    l->prev = NULL;
+    l->next = NULL;
+    l->person = person_number;
 
-    if (head == NULL && tail == NULL)
+    if (choice->head == NULL && choice->tail == NULL)
     {
-        choice->head = p;
-        choice->tail = p;
+        choice->head = l;
+        choice->tail = l;
     }
     else
     {
-        tail->next = p;
-        p->prev = tail;
-        tail = p;
+        choice->tail->next = l;
+        l->prev = choice->tail;
+        choice->tail = l;
     }
-}
-
-void delete_first(struct list choice)
-{
-    choice.head = choice.head->next;
-    free(choice.head->prev);
-    choice.head->prev = NULL;
-}
-
-void delete_last(struct list choice)
-{
-    choice.tail = choice.tail->prev;
-    free(choice.tail->next);
-    choice.tail->naxt = NULL;
 }
 
 void delete_current(struct list choice, int curr_p_num)
