@@ -27,8 +27,14 @@ int main()
 {
     int n;
     scanf("%d", &n);
-    int choices[n][n - 1];
-    bool rejected[n][n];
+    int * choices[n];
+    for(int i=0;i<n;i++){
+        choices[i] = (int *)malloc(sizeof(int)*(n-1));
+    }
+    bool * rejected[n];
+    for(int i=0;i<n;i++){
+        rejected[i] = (bool *)malloc(sizeof(bool)*(n));
+    }
     int set_proposed_to[n];
     int accepted[n];
     int temp;
@@ -124,7 +130,8 @@ bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *ac
         {
             printf("le ");
             next_choice = 0;
-            printf("%d %d %d",choices[proposer][next_choice],proposer,rejected[proposer][choices[proposer][next_choice]]);
+            //printf("%d %d %d",choices[proposer][next_choice],proposer,rejected[proposer][choices[proposer][next_choice]]);
+            printf("%d %d ",choices[proposer][next_choice],proposer);
             while(rejected[proposer][choices[proposer][next_choice]] != false)
                 next_choice++;
             printf("Next choice: %d  ",next_choice);
