@@ -74,8 +74,9 @@ int main()
         struct list *result = stage2(n, choices, rejected, accepted);
         stage3(result, n);
         printf("Resultant matching is :\n");
-        for(int i=0;i<n;i++){
-            printf("%d   -   %d\n",i,result[i].head->person);
+        for (int i = 0; i < n; i++)
+        {
+            printf("%d   -   %d\n", i, result[i].head->person);
         }
     }
     return 0;
@@ -109,7 +110,7 @@ bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *ac
                         break;
                     }
                     j++;
-                }   
+                }
                 if (choices[choices[proposer][next_choice]][j] == proposer)
                 {
                     while (accepted[choices[proposer][next_choice]] != choices[choices[proposer][next_choice]][j])
@@ -165,13 +166,15 @@ struct list *stage2(int n, int **choices, bool **rejected, int *accepted)
 
 void stage3(struct list *result, int n)
 {
-    int p[n+1],q[n+1];
+    int p[n + 1], q[n + 1];
     int exists[n];
-    for(int i=0;i<n;i++){
-        exists[i]=-1;
+    for (int i = 0; i < n; i++)
+    {
+        exists[i] = -1;
     }
-    int i,at_level1,at_level2;
-    while(1){
+    int i, at_level1, at_level2;
+    while (1)
+    {
         for (i = 0; i < n; i++)
         {
             if (result[i].head != result[i].tail)
@@ -183,21 +186,23 @@ void stage3(struct list *result, int n)
         if (i == n)
             break;
         at_level1 = p[0];
-        i=0;
+        i = 0;
         do
         {
-            exists[p[i]]=i;
+            exists[p[i]] = i;
             at_level2 = result[at_level1].head->next->person;
             at_level1 = result[at_level2].tail->person;
-            q[i]=at_level2;
-            p[i+1]=at_level1;
+            q[i] = at_level2;
+            p[i + 1] = at_level1;
             i++;
-        } while (exists[at_level1]==-1);
-        while(i>exists[p[i]]){
+        } while (exists[at_level1] == -1);
+        int cycle_node = p[i];
+        while (i > exists[cycle_node])
+        {
             at_level1 = p[i];
-            at_level2 = q[i-1];
+            at_level2 = q[i - 1];
             result[at_level2].tail = delete_tail(result[at_level2].tail);
-            delete(result, at_level1, at_level2);
+            delete (result, at_level1, at_level2);
             i--;
         }
     }
