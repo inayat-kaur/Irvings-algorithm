@@ -101,6 +101,8 @@ bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *ac
                         j++;
                     accepted[choices[proposer][next_choice]] = proposer;
                     set_proposed_to[proposer] = choices[proposer][next_choice];
+                    rejected[choices[choices[proposer][next_choice]][j]][choices[proposer][next_choice]] = true;
+                    rejected[choices[proposer][next_choice]][choices[choices[proposer][next_choice]][j]] = true;
                     proposer = choices[choices[proposer][next_choice]][j];
                 }
             }
