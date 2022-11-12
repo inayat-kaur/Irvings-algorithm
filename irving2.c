@@ -24,6 +24,8 @@ bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *ac
 struct list *stage2(int n, int **choices, bool **rejected, int *accepted);
 void stage3(struct list *result, int n);
 
+
+
 int main()
 {
     int n;
@@ -81,6 +83,10 @@ int main()
     }
     return 0;
 }
+
+
+
+/************************************    Various stages of the algorithm    ************************************/
 
 bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *accepted)
 {
@@ -207,6 +213,10 @@ void stage3(struct list *result, int n)
         }
     }
 }
+
+
+
+/************************************    Operations for doubly linked list    ************************************/
 
 void insert(struct list *choice, int person_number)
 {
