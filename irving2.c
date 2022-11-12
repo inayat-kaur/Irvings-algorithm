@@ -18,22 +18,25 @@ struct list
 
 struct list create_list();
 void insert(struct list *choice, int person_number);
-void delete_current();
+struct list_node *delete_tail(struct list_node *tail);
+void delete (struct list *result, int from, int person);
 bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *accepted);
 struct list *stage2(int n, int **choices, bool **rejected, int *accepted);
-void stage3();
+void stage3(struct list *result, int n);
 
 int main()
 {
     int n;
     scanf("%d", &n);
-    int * choices[n];
-    for(int i=0;i<n;i++){
-        choices[i] = (int *)malloc(sizeof(int)*(n-1));
+    int *choices[n];
+    for (int i = 0; i < n; i++)
+    {
+        choices[i] = (int *)malloc(sizeof(int) * (n - 1));
     }
-    bool * rejected[n];
-    for(int i=0;i<n;i++){
-        rejected[i] = (bool *)malloc(sizeof(bool)*(n));
+    bool *rejected[n];
+    for (int i = 0; i < n; i++)
+    {
+        rejected[i] = (bool *)malloc(sizeof(bool) * (n));
     }
     int set_proposed_to[n];
     int accepted[n];
@@ -52,7 +55,8 @@ int main()
         {
             if (i == j)
                 rejected[i][j] = true;
-            else rejected[i][j] = false;
+            else
+                rejected[i][j] = false;
         }
     }
     for (int i = 0; i < n; i++)
@@ -67,26 +71,13 @@ int main()
     }
     else
     {
-        for (int i = 0; i < n; i++)
-        {
-            printf("Accepted[%d] = %d ", i, accepted[i]);
-            printf("Proposed[%d] = %d\n", i, set_proposed_to[i]);
-        }
-        for (int i = 0; i < n; i++)
-        {
-            printf("Rejected %d : ");
-            for (int j = 0; j < n; j++)
-            {
-                if (rejected[i][j] == true)
-                    printf("T ");
-                else
-                    printf("F ");
-            }
-            printf("\n");
-        }
         struct list *result = stage2(n, choices, rejected, accepted);
+        stage3(result, n);
+        printf("Resultant matching is :\n");
+        for(int i=0;i<n;i++){
+            printf("%d   -   %d\n",i,result[i].head->person);
+        }
     }
-    printf("Program end");
     return 0;
 }
 
@@ -100,9 +91,9 @@ bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *ac
         while (true)
         {
             next_choice = 0;
-            while(next_choice<n-1&&rejected[proposer][choices[proposer][next_choice]] != false)
+            while (next_choice < n - 1 && rejected[proposer][choices[proposer][next_choice]] != false)
                 next_choice++;
-            if (next_choice == n-1)
+            if (next_choice == n - 1)
             {
                 return false;
             }
@@ -145,8 +136,8 @@ struct list *stage2(int n, int **choices, bool **rejected, int *accepted)
 {
     for (int i = 0; i < n; i++)
     {
-        int end = n - 1;
-        while (choices[i][end] != accepted[i])
+        int end = n - 2;
+        while (end >= 0 && choices[i][end] != accepted[i])
         {
             if (rejected[i][choices[i][end]] != true)
             {
@@ -160,9 +151,9 @@ struct list *stage2(int n, int **choices, bool **rejected, int *accepted)
     struct list *result = (struct list *)malloc(n * sizeof(struct list));
     for (int i = 0; i < n; i++)
     {
-        result[i].head=NULL;
-        result[i].tail=NULL;
-        result[i].list_for=i;
+        result[i].head = NULL;
+        result[i].tail = NULL;
+        result[i].list_for = i;
         for (int j = 0; j < n - 1; j++)
         {
             if (rejected[i][choices[i][j]] == false)
@@ -172,8 +163,30 @@ struct list *stage2(int n, int **choices, bool **rejected, int *accepted)
     return result;
 }
 
-void stage3()
+void stage3(struct list *result, int n)
 {
+    int cycle_for, at_level1, at_level2, i;
+    while (1)
+    {
+        for (i = 0; i < n; i++)
+        {
+            if (result[i].head != result[i].tail)
+            {
+                cycle_for = result[i].list_for;
+                break;
+            }
+        }
+        if (i == n)
+            break;
+        at_level1 = cycle_for;
+        do
+        {
+            at_level2 = result[at_level1].head->next->person;
+            at_level1 = result[at_level2].tail->person;
+            result[at_level2].tail = delete_tail(result[at_level2].tail);
+            delete (result, at_level1, at_level2);
+        } while (at_level1 != cycle_for);
+    }
 }
 
 void insert(struct list *choice, int person_number)
@@ -197,27 +210,35 @@ void insert(struct list *choice, int person_number)
     }
 }
 
-void delete_current(struct list choice, int curr_p_num)
+struct list_node *delete_tail(struct list_node *tail)
 {
-    struct list_node *t = choice.head;
-    while (t->person != curr_p_num)
+    struct list_node *temp;
+    temp = tail->prev;
+    tail->prev->next = NULL;
+    free(tail);
+    return temp;
+}
+
+void delete (struct list *result, int from, int id)
+{
+    struct list_node *temp;
+    temp = result[from].head;
+    while (temp->person != id)
+        temp = temp->next;
+    if (result[from].head == temp)
     {
-        t = t->next;
+        result[from].head = temp->next;
+        temp->next->prev = NULL;
+        free(temp);
     }
-    if (t == choice.head)
+    else if (result[from].tail == temp)
     {
-        choice.head = choice.head->next;
-        choice.head->prev = NULL;
-    }
-    else if (t == choice.tail)
-    {
-        choice.tail = choice.tail->prev;
-        choice.tail->next = NULL;
+        result[from].tail = delete_tail(result[from].tail);
     }
     else
     {
-        t->prev = t->next;
-        t->next = t->prev;
-        free(t);
+        temp->prev->next = temp->next;
+        temp->next->prev = temp->prev;
+        free(temp);
     }
 }
