@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 struct list_node
@@ -16,10 +17,10 @@ struct list
 };
 
 struct list create_list();
-void insert(struct list* choice, int person_number);
+void insert(struct list *choice, int person_number);
 void delete_current();
 bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *accepted);
-struct list* stage2(int n, int **choices, bool **rejected, int *accepted);
+struct list *stage2(int n, int **choices, bool **rejected, int *accepted);
 void stage3();
 
 int main()
@@ -41,11 +42,21 @@ int main()
     }
     for (int i = 0; i < n; i++)
     {
+        printf("Choices %d: ",i);
+        for (int j = 0; j < n - 1; j++)
+        {
+            printf("%d ",choices[i][j]);
+        }
+        printf("\n");
+    }
+    printf("Done\n");
+    for (int i = 0; i < n; i++)
+    {
         for (int j = 0; j < n; j++)
         {
             if (i == j)
                 rejected[i][j] = true;
-            rejected[i][j] = false;
+            else rejected[i][j] = false;
         }
     }
     for (int i = 0; i < n; i++)
@@ -53,6 +64,24 @@ int main()
         set_proposed_to[i] = -1;
         accepted[i] = -1;
     }
+    printf("Done\n");
+    for (int i = 0; i < n; i++)
+        {
+            printf("Accepted[%d] = %d ", i, accepted[i]);
+            printf("Proposed[%d] = %d\n", i, set_proposed_to[i]);
+        }
+        for (int i = 0; i < n; i++)
+        {
+            printf("Rejected %d : ",i);
+            for (int j = 0; j < n; j++)
+            {
+                if (rejected[i][j] == true)
+                    printf("T ");
+                else
+                    printf("F ");
+            }
+            printf("\n");
+        }
     bool matching_exists = stage1(n, choices, rejected, set_proposed_to, accepted);
     if (matching_exists == false)
     {
@@ -60,7 +89,24 @@ int main()
     }
     else
     {
-        struct list ** result = stage2(n, choices, rejected, accepted);
+        for (int i = 0; i < n; i++)
+        {
+            printf("Accepted[%d] = %d ", i, accepted[i]);
+            printf("Proposed[%d] = %d\n", i, set_proposed_to[i]);
+        }
+        for (int i = 0; i < n; i++)
+        {
+            printf("Rejected %d : ");
+            for (int j = 0; j < n; j++)
+            {
+                if (rejected[i][j] == true)
+                    printf("T ");
+                else
+                    printf("F ");
+            }
+            printf("\n");
+        }
+        struct list **result = stage2(n, choices, rejected, accepted);
     }
     return 0;
 }
@@ -71,13 +117,17 @@ bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *ac
     for (int person = 0; person < n; person++)
     {
         proposer = person;
+        printf("%d Start ", proposer);
         next_choice = 0;
         // set_proposed_to[choices[proposer][next_choice]] == -1
-        while (1)
+        while (true)
         {
+            printf("le ");
             next_choice = 0;
-            while (rejected[proposer][choices[proposer][next_choice]] == true)
+            printf("%d %d %d",choices[proposer][next_choice],proposer,rejected[proposer][choices[proposer][next_choice]]);
+            while(rejected[proposer][choices[proposer][next_choice]] != false)
                 next_choice++;
+            printf("Next choice: %d  ",next_choice);
             if (next_choice == n)
             {
                 return false;
@@ -108,16 +158,18 @@ bool stage1(int n, int **choices, bool **rejected, int *set_proposed_to, int *ac
             }
             else
             {
+                printf("Accepted by : %d  ",next_choice);
                 accepted[choices[proposer][next_choice]] = proposer;
                 set_proposed_to[proposer] = choices[proposer][next_choice];
                 break;
             }
         }
+        printf("%d Done\n", proposer);
     }
     return true;
 }
 
-struct list* stage2(int n, int **choices, bool **rejected, int *accepted)
+struct list *stage2(int n, int **choices, bool **rejected, int *accepted)
 {
     for (int i = 0; i < n; i++)
     {
@@ -133,30 +185,33 @@ struct list* stage2(int n, int **choices, bool **rejected, int *accepted)
         }
     }
 
-    struct list * result = (struct list*)malloc(n*sizeof(struct list));
-    for(int i=0;i<n;i++){
+    struct list *result = (struct list *)malloc(n * sizeof(struct list));
+    for (int i = 0; i < n; i++)
+    {
         result[i] = create_list(i);
-        for(int j=0;j<n-1;j++){
-            if(rejected[i][choices[i][j]]==false)insert(&result[i],choices[i][j]);
+        for (int j = 0; j < n - 1; j++)
+        {
+            if (rejected[i][choices[i][j]] == false)
+                insert(&result[i], choices[i][j]);
         }
     }
     return result;
 }
 
-void stage3(){
-
+void stage3()
+{
 }
 
 struct list create_list(int i)
 {
     struct list s1;
     s1.list_for = i;
-    s1.head=NULL;
-    s1.tail=NULL;
+    s1.head = NULL;
+    s1.tail = NULL;
     return s1;
 }
 
-void insert(struct list * choice, int person_number)
+void insert(struct list *choice, int person_number)
 {
     struct list_node *l = (struct list_node *)malloc(sizeof(struct list_node));
 
@@ -180,16 +235,16 @@ void insert(struct list * choice, int person_number)
 void delete_current(struct list choice, int curr_p_num)
 {
     struct list_node *t = choice.head;
-    while(t->person != curr_p_num)
+    while (t->person != curr_p_num)
     {
         t = t->next;
     }
-    if(t == choice.head) 
+    if (t == choice.head)
     {
         choice.head = choice.head->next;
         choice.head->prev = NULL;
     }
-    else if(t == choice.tail) 
+    else if (t == choice.tail)
     {
         choice.tail = choice.tail->prev;
         choice.tail->next = NULL;
