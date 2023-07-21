@@ -2,8 +2,8 @@
 
 It is an efficient algorithm to solve the stable roommates problem.
 
-To run the program,
-`gcc irving.c -o out`
+To run the program, 
+`gcc irving.c -o out` 
 `./out`
 
 - The first line of input should be the number of members n which has to be even.
